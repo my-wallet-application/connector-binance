@@ -1,4 +1,3 @@
-use my_web_socket_client::hyper_tungstenite::tungstenite::Message;
 use my_web_socket_client::WebSocketClient;
 use rust_extensions::Logger;
 use std::sync::atomic::AtomicBool;
@@ -33,9 +32,9 @@ impl BinanceWsClient {
 
     pub fn start(&self) {
         if !self.is_started.load(std::sync::atomic::Ordering::Relaxed) {
-            let ping_message = Message::Ping(vec![]);
+            let ping_message = super::create_ping_message();
             self.ws_client
-                .start(ping_message, self.binance_client_callback.clone());
+                .start(Some(ping_message), self.binance_client_callback.clone());
             self.is_started
                 .store(true, std::sync::atomic::Ordering::SeqCst);
         }

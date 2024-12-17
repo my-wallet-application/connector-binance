@@ -67,12 +67,12 @@ impl WsCallback for BinanceClientCallback {
     async fn on_data(&self, connection: Arc<WsConnection>, data: Message) {
         match data {
             Message::Text(msg) => {
-                let event = parse_msg(&msg);
+                let event = parse_msg(msg.as_str());
 
                 self.event_handler.on_data(event).await;
             }
             Message::Ping(_) => {
-                connection.send_message(Message::Ping(vec![])).await;
+                connection.send_message(super::create_ping_message()).await;
             }
             Message::Pong(_) | Message::Binary(_) | Message::Frame(_) => (),
             Message::Close(_) => {
